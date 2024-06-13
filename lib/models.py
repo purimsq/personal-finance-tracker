@@ -51,4 +51,12 @@ class Category(Base):
     name = Column(String, unique=True, nullable=False)
     transactions = relationship('Transaction', secondary=transaction_categories, back_populates='categories')
 
+class Budget(Base):
+    __tablename__ = 'budgets'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    category_name = Column(String)
+    amount = Column(Float)
+    user = relationship('User', back_populates='budgets') 
+
 Base.metadata.create_all(bind=engine)

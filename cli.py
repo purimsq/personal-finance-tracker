@@ -3,6 +3,7 @@ from lib.db.models import User, Account, Transaction, Category
 from lib.utils import hash_password, check_password
 import datetime
 
+
 def register(session):
     username = input("Username: ")
     email = input("Email: ")
@@ -58,12 +59,48 @@ def add_transaction(session, user):
     session.commit()
     print("Transaction added successfully!")
 
-def generate_report(session, user):
+def create_financial_summary(session, user):
+    print("Creating financial summary...")
+
+    # Example: Summarize total income and expenses per month
     transactions = session.query(Transaction).filter_by(user_id=user.id).all()
 
-    print("Transactions:")
+    summary = {}
     for transaction in transactions:
-        print(f"Date: {transaction.date}, Amount: {transaction.amount}, Description: {transaction.description}")
+        month = transaction.date.strftime('%Y-%m')
+        if month not in summary:
+            summary[month] = {'income': 0, 'expenses': 0}
+        if transaction.amount >= 0:
+            summary[month]['income'] += transaction.amount
+        else:
+            summary[month]['expenses'] += abs(transaction.amount)
+
+    print("Financial summary created successfully!")
+    for month, data in summary.items():
+        print(f"{month}: Income = {data['income']}, Expenses = {data['expenses']}")
+
+def view_generated_reports(session, user):
+    # Placeholder for viewing previously generated reports
+    # You can extend this function to retrieve and display saved reports from the database or files
+    print("Displaying generated reports...")
+    create_financial_summary(session, user)  # Example: re-use the summary creation for now
+
+def generate_report(session, user):
+    while True:
+        print("\nGenerate Report Menu")
+        print("1. Create Financial Summary")
+        print("2. View Generated Reports")
+        print("3. Back to Main Menu")
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            create_financial_summary(session, user)
+        elif choice == '2':
+            view_generated_reports(session, user)
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 def set_budget(session, user):
     # Implement budget setting functionality
@@ -116,3 +153,6 @@ def main_menu(session):
                 break
             else:
                 print("Invalid choice. Please try again.")
+
+if __name__ == '__main__':
+    main_menu()
