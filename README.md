@@ -46,13 +46,11 @@ pipenv install
 Set up the database:
 alembic upgrade head
 Usage
+
 Activate the Pipenv shell:
-
-
-
 pipenv shell
-Run the application:
 
+Run the application:
 # Copy code
 python app.py
 Follow the CLI prompts to:
