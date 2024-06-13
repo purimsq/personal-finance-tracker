@@ -49,7 +49,7 @@ Usage
 Activate the Pipenv shell:
 
 
-# Copy code
+
 pipenv shell
 Run the application:
 
