@@ -54,7 +54,6 @@ Run the application:
 python app.py
 
 Follow the CLI prompts to:
-
 # Register or log in
 
 Add accounts and transactions
