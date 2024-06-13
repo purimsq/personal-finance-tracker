@@ -56,10 +56,10 @@ python app.py
 Follow the CLI prompts to:
 # Register or log in
 
-Add accounts and transactions
-Generate financial summaries
-Set and track budget goals
-Database Models
+- Add accounts and transactions
+- Generate financial summaries
+- Set and track budget goals
+- Database Models
 
 # User
 
