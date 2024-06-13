@@ -51,8 +51,8 @@ Activate the Pipenv shell:
 pipenv shell
 
 Run the application:
-# Copy code
 python app.py
+
 Follow the CLI prompts to:
 
 # Register or log in
