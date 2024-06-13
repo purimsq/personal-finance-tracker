@@ -39,10 +39,8 @@ Clone the repository:
 
 git clone https://github.com/yourusername/personal-finance-tracker.git
 cd personal-finance-tracker
+
 Install dependencies:
-
-
-# Copy code
 pipenv install
 Set up the database:
 
