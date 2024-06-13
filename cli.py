@@ -37,6 +37,23 @@ def add_account(session, user):
     session.commit()
     print("Account added successfully!")
 
+def delete_account(session, user):
+    account_name = input("Account name to delete: ")
+    account = session.query(Account).filter_by(user_id=user.id, name=account_name).first()
+    if not account:
+        print("Account not found.")
+        return
+
+    # Delete all transactions associated with the account
+    transactions = session.query(Transaction).filter_by(account_id=account.id).all()
+    for transaction in transactions:
+        session.delete(transaction)
+
+    # Delete the account
+    session.delete(account)
+    session.commit()
+    print("Account and associated transactions deleted successfully!")
+
 def add_transaction(session, user):
     account_name = input("Account name: ")
     account = session.query(Account).filter_by(user_id=user.id, name=account_name).first()
@@ -62,7 +79,6 @@ def add_transaction(session, user):
 def create_financial_summary(session, user):
     print("Creating financial summary...")
 
-    # Example: Summarize total income and expenses per month
     transactions = session.query(Transaction).filter_by(user_id=user.id).all()
 
     summary = {}
@@ -80,10 +96,8 @@ def create_financial_summary(session, user):
         print(f"{month}: Income = {data['income']}, Expenses = {data['expenses']}")
 
 def view_generated_reports(session, user):
-    # Placeholder for viewing previously generated reports
-    # You can extend this function to retrieve and display saved reports from the database or files
     print("Displaying generated reports...")
-    create_financial_summary(session, user)  # Example: re-use the summary creation for now
+    create_financial_summary(session, user)
 
 def generate_report(session, user):
     while True:
@@ -132,8 +146,9 @@ def main_menu(session):
             print("2. Add Transaction")
             print("3. Generate Report")
             print("4. Set Budget")
-            print("5. Logout")
-            print("6. Exit")
+            print("5. Delete Account")
+            print("6. Logout")
+            print("7. Exit")
 
             choice = input("Choose an option: ")
 
@@ -146,9 +161,11 @@ def main_menu(session):
             elif choice == '4':
                 set_budget(session, user)
             elif choice == '5':
+                delete_account(session, user)
+            elif choice == '6':
                 print("Logging out...")
                 user = None
-            elif choice == '6':
+            elif choice == '7':
                 print("Goodbye!")
                 break
             else:
