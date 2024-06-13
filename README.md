@@ -42,10 +42,8 @@ cd personal-finance-tracker
 
 Install dependencies:
 pipenv install
+
 Set up the database:
-
-
-# Copy code
 alembic upgrade head
 Usage
 Activate the Pipenv shell:
