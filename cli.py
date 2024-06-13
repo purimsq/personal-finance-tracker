@@ -2,7 +2,13 @@ import getpass
 from lib.db.models import User, Account, Transaction, Category
 from lib.utils import hash_password, check_password
 import datetime
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import sessionmaker
 
+# Database setup
+DATABASE_URL = "sqlite:///personal_finance_tracker.db"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def register(session):
     username = input("Username: ")
@@ -39,9 +45,10 @@ def add_account(session, user):
 
 def delete_account(session, user):
     account_name = input("Account name to delete: ")
-    account = session.query(Account).filter_by(user_id=user.id, name=account_name).first()
+    account_name_lower = account_name.lower()  # Convert to lower case for case insensitivity
+    account = session.query(Account).filter_by(user_id=user.id).filter(func.lower(Account.name) == account_name_lower).first()
     if not account:
-        print("Account not found.")
+        print("Account deleted successfully.")
         return
 
     # Delete all transactions associated with the account
@@ -49,10 +56,10 @@ def delete_account(session, user):
     for transaction in transactions:
         session.delete(transaction)
 
-    # Delete the account
+    # Delete the account itself
     session.delete(account)
     session.commit()
-    print("Account and associated transactions deleted successfully!")
+    print(f"Account '{account_name}' and associated transactions deleted successfully!")
 
 def add_transaction(session, user):
     account_name = input("Account name: ")
@@ -116,9 +123,18 @@ def generate_report(session, user):
         else:
             print("Invalid choice. Please try again.")
 
-def set_budget(session, user):
-    # Implement budget setting functionality
-    pass
+def update_user_account(session, user):
+    print("\nUpdate Account Information")
+    new_username = input("New username (leave blank to keep current): ")
+    new_password = getpass.getpass("New password (leave blank to keep current): ")
+
+    if new_username:
+        user.username = new_username
+    if new_password:
+        user.password = hash_password(new_password)
+    
+    session.commit()
+    print("Account information updated successfully!")
 
 def main_menu(session):
     print("Welcome to the Personal Finance Tracker!")
@@ -145,7 +161,7 @@ def main_menu(session):
             print("1. Add Account")
             print("2. Add Transaction")
             print("3. Generate Report")
-            print("4. Set Budget")
+            print("4. Update Account Information")
             print("5. Delete Account")
             print("6. Logout")
             print("7. Exit")
@@ -159,7 +175,7 @@ def main_menu(session):
             elif choice == '3':
                 generate_report(session, user)
             elif choice == '4':
-                set_budget(session, user)
+                update_user_account(session, user)
             elif choice == '5':
                 delete_account(session, user)
             elif choice == '6':
@@ -169,7 +185,9 @@ def main_menu(session):
                 print("Goodbye!")
                 break
             else:
-                print("Invalid choice. Please try again." )
+                print("Invalid choice. Please try again.")
 
 if __name__ == '__main__':
-    main_menu()
+    Base.metadata.create_all(bind=engine)
+    with SessionLocal() as session:
+        main_menu(session)
