@@ -105,6 +105,7 @@ def create_financial_summary(session, user):
 def view_generated_reports(session, user):
     print("Displaying generated reports...")
     create_financial_summary(session, user)
+# ignore ("Creating financial summary...")
 
 def generate_report(session, user):
     while True:
