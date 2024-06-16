@@ -1,5 +1,5 @@
 import getpass
-from lib.db.models import User, Account, Transaction, Category
+from lib.db.models import Base, User, Account, Transaction, Category
 from lib.utils import hash_password, check_password
 import datetime
 from sqlalchemy import create_engine, func
